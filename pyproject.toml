@@ -1,12 +1,13 @@
 [project]
 name = "tcwpy"
 version = "0.1.0"
-description = "Add your description here"
+authors = [{name = "Tom Stephen", email = "tom@outerloop.io"}]
+description = "Read a TransCAD fixed-format binary table to a pandas DataFrame."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "pandas",
-    "numpy"
+    "numpy",
 ]
 
 [dependency-groups]
