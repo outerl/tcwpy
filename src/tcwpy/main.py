@@ -13,8 +13,6 @@ from typing import Any, cast
 
 import numpy as np
 import pandas as pd
-from transurban_demand_model.common.common import _record_file_access
-from transurban_demand_model.logging_utils import function_logging
 
 logger = logging.getLogger(__name__)
 
@@ -187,11 +185,10 @@ def _decode_dictionary(dictionary_path: Path) -> str:
         return raw.decode("cp1252", errors="replace")
 
 
-@function_logging(
-    "Reading TransCAD dictionary {dictionary_path}", logger=logger, level=logging.DEBUG
-)
+# @function_logging(
+#     "Reading TransCAD dictionary {dictionary_path}", logger=logger, level=logging.DEBUG
+# )
 def _read_dictionary(dictionary_path: Path) -> tuple[int, list[_Column]]:
-    _record_file_access(dictionary_path)
     lines = _decode_dictionary(dictionary_path).splitlines()
     if len(lines) < 3:
         raise TranscadDictionaryError(
@@ -311,9 +308,9 @@ def _to_dataframe(data: np.ndarray, columns: list[_Column]) -> pd.DataFrame:
     return frame
 
 
-@function_logging(
-    "Reading TransCAD binary table {path}", logger=logger, level=logging.DEBUG
-)
+# @function_logging(
+#     "Reading TransCAD binary table {path}", logger=logger, level=logging.DEBUG
+# )
 def read_transcad_binary(
     path: PathLike, dictionary_path: PathLike | None = None
 ) -> pd.DataFrame:
@@ -350,6 +347,5 @@ def read_transcad_binary(
             f"{binary_path} size ({file_size} bytes) is not a multiple of its {record_width}-byte record width"
         )
 
-    _record_file_access(binary_path)
     data = _read_records(binary_path, record_width, columns)
     return _to_dataframe(data, columns)
