@@ -4,7 +4,6 @@ on: [push]
 
 jobs:
   testing:
-    needs: linting
     runs-on: ${{ matrix.os}}
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.os }}-${{ matrix.python-version }}
