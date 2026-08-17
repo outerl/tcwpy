@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   testing:
-    # needs: linting
+    needs: linting
     runs-on: ${{ matrix.os}}
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.os }}-${{ matrix.python-version }}
@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.11', '3.12', '3.13', '3.14']
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
 
       max-parallel: 20
     steps:
