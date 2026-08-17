@@ -73,11 +73,6 @@ sentinels (`-32767` and `-2147483647`) become `pd.NA`; the adjacent representabl
 values are left untouched. The exact four- and eight-byte float sentinels become
 `NaN`.
 
-The four-byte float sentinel deliberately differs from the literal in
-`caliperR`: this reader uses the exact `float32` minimum. `caliperR` uses the
-rounded literal `-3.402823466e+38`, which never compares equal to the value read
-from disk, so its `F` fields fail to map that sentinel to `NA`.
-
 
 Character fields remain `bytes`, because the DCB does not identify a character
 encoding. Reading stops at the first NUL byte, leading/trailing spaces, tabs,
