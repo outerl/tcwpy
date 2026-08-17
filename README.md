@@ -65,12 +65,6 @@ silently decoded as another TransCAD type.
 
 `Date`, `Time`, and `DateTime` fields are rejected, as they are not implemented.
 
-Integer columns use pandas nullable integer dtypes. TransCAD's exact missing
-sentinels (`-32767` and `-2147483647`) become `pd.NA`; the adjacent representable
-values are left untouched. The exact four- and eight-byte float sentinels become
-`NaN`.
-
-
 Character fields remain `bytes`, because the DCB does not identify a character
 encoding. Reading stops at the first NUL byte, leading/trailing spaces, tabs,
 carriage returns, and newlines are trimmed, and an empty result becomes
