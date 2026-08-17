@@ -63,10 +63,7 @@ conversion and missing-value rules:
 A numeric field whose width contradicts its type is rejected rather than
 silently decoded as another TransCAD type.
 
-`Date`, `Time`, and `DateTime` fields are rejected. `caliperR` reads them as
-integers or doubles and then applies a Unix epoch origin, but TransCAD's
-on-disk encoding for them is undocumented, so a wrong date is more likely than a
-right one. Export such tables from TransCAD instead.
+`Date`, `Time`, and `DateTime` fields are rejected, as they are not implemented.
 
 Integer columns use pandas nullable integer dtypes. TransCAD's exact missing
 sentinels (`-32767` and `-2147483647`) become `pd.NA`; the adjacent representable

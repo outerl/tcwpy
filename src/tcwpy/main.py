@@ -18,10 +18,8 @@ logger = logging.getLogger(__name__)
 
 PathLike = str | Path
 
-# caliperR maps these to R date/time classes, but TransCAD's on-disk encoding for
-# them is undocumented and has not been verified against a real file. Rejecting
-# them is safer than decoding them into plausible-looking wrong dates.
-_UNVERIFIED_TYPES = {"DATE", "TIME", "DATETIME"}  # TODO is this what we want to do
+# Skipping implementation of DATE, TIME, and DATETIME as there is no test data
+_UNVERIFIED_TYPES = {"DATE", "TIME", "DATETIME"}
 
 # The two extensions that name a table; either one identifies the pair.
 _TABLE_SUFFIXES = (".bin", ".dcb")
