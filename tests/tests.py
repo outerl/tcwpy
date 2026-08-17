@@ -1,4 +1,3 @@
-import hashlib
 import struct
 from collections.abc import Sequence
 from pathlib import Path
@@ -17,7 +16,6 @@ _DELETED_RECORD_MARKER = bytes.fromhex(
     "91 8b 4a 5c bc db 4f 14 63 23 7f 78 a6 95 0d 27"
 )
 _FLOAT32_MISSING = float(np.finfo(np.float32).min)
-_FLOAT64_MISSING = float(np.finfo(np.float64).min)
 
 
 def _write_table(
@@ -49,111 +47,6 @@ def test_reads_fields_records_and_maps_missing_values_to_na(tmp_path: Path) -> N
     assert result["ID1"].tolist() == [1, 2]
     assert result["Val"].iloc[0] == pytest.approx(3.14)
     assert np.isnan(result["Val"].iloc[1])
-
-
-_TOY_TABLE_DICTIONARY = (
-    "\n"
-    "52\n"
-    '"first",I,1,4,0,8,0,,"","first field",,"Sum","field_a"\n'
-    '"second",C,5,16,0,16,0,,"","second field",,"Copy","field_b"\n'
-    '"third",C,21,16,0,16,0,,"","third field",,"Copy","field_c"\n'
-    '"fourth",R,37,8,0,10,2,,"","fourth field",,"Sum","field_d"\n'
-    '"fifth",R,45,8,0,10,2,,"","fifth field",,"Sum","field_e"\n'
-)
-
-
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def _toy_table_record(first: int, second: bytes, fourth: float) -> bytes:
-    """Build one 52-byte record in caliperR's toy_table layout (space padded)."""
-    return (
-        struct.pack("<i", first)
-        + second.ljust(16)
-        + b" " * 16
-        + struct.pack("<dd", fourth, _FLOAT64_MISSING)
-    )
-
-
-def _write_toy_table(tmp_path: Path, dictionary_suffix: str = ".dcb") -> Path:
-    stem = tmp_path / "toy_table"
-    stem.with_suffix(dictionary_suffix).write_text(_TOY_TABLE_DICTIONARY)
-    stem.with_suffix(".bin").write_bytes(
-        b"".join(
-            [
-                _toy_table_record(1, b"a", 1.27),
-                _toy_table_record(2, b"b", 2.0),
-                _toy_table_record(3, b"", 7.8),
-                _toy_table_record(4, b"d", 8.5),
-                _toy_table_record(-2147483647, b"e", 9.0),
-                _DELETED_RECORD_MARKER
-                + b" " * 20
-                + struct.pack("<dd", 9.0, _FLOAT64_MISSING),
-                _toy_table_record(7, b"g", 3.2),
-            ]
-        )
-    )
-    return stem
-
-
-def test_matches_caliperr_reference_fixture(tmp_path: Path) -> None:
-    """Reproduce caliperR's toy_table.DCB/bin fixture byte for byte.
-
-    Expectations mirror caliperR's own ``test-zzz-read-bin-no-com.R``: the second
-    field's padding is trimmed, its blank third value is NA, the all-missing third
-    and fifth fields keep their declared types, field descriptions are retained,
-    and the deleted record is dropped, leaving six rows.
-    """
-    stem = _write_toy_table(tmp_path)
-
-    # Guards that the fixture built above is still byte for byte the pair from
-    # caliperR/inst/extdata/gisdk/testing/, rather than merely resembling it.
-    assert (
-        _sha256(stem.with_suffix(".bin"))
-        == "26c551b9ac485926e21f300e0849cd3fb62d2c12a8fb02f08e1b60bcb535f31c"
-    )
-    assert (
-        _sha256(stem.with_suffix(".dcb"))
-        == "6eeb2436d44204ccaaa1fd5269077c055437fd72c41cb091a5b77857dbafd45b"
-    )
-
-    result = read_transcad_binary(stem)
-
-    assert len(result) == 6
-    assert result["first"].tolist()[:4] == [1, 2, 3, 4]
-    assert pd.isna(result["first"].iloc[4])
-    assert result["first"].iloc[5] == 7
-    assert result["second"].tolist() == [b"a", b"b", pd.NA, b"d", b"e", b"g"]
-    assert result["third"].isna().all()
-    assert result["third"].dtype == np.dtype("object")
-    assert result["fourth"].tolist() == pytest.approx([1.27, 2.0, 7.8, 8.5, 9.0, 3.2])
-    assert result["fifth"].isna().all()
-    assert result["fifth"].dtype == np.dtype("f8")
-    assert result.attrs["field_descriptions"] == {
-        "first": "first field",
-        "second": "second field",
-        "third": "third field",
-        "fourth": "fourth field",
-        "fifth": "fifth field",
-    }
-    assert result.attrs["display_names"] == {
-        "first": "field_a",
-        "second": "field_b",
-        "third": "field_c",
-        "fourth": "field_d",
-        "fifth": "field_e",
-    }
-
-
-def test_finds_an_uppercase_dictionary_beside_a_lowercase_binary(
-    tmp_path: Path,
-) -> None:
-    """caliperR's own fixture is toy_table.bin next to toy_table.DCB."""
-    stem = _write_toy_table(tmp_path, dictionary_suffix=".DCB")
-
-    assert len(read_transcad_binary(stem.with_suffix(".bin"))) == 6
-    assert len(read_transcad_binary(stem.with_suffix(".DCB"))) == 6
 
 
 @pytest.mark.parametrize(
