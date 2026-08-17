@@ -1,7 +1,10 @@
 [project]
 name = "tcwpy"
 version = "0.1.0"
-authors = [{name = "Tom Stephen", email = "tom@outerloop.io"}]
+authors = [
+    {name = "Tom Stephen", email = "tom@outerloop.io"},
+    {name = "Pedro Camargo, email = "pedro@outerloop.io"},
+]
 description = "Read a TransCAD fixed-format binary table to a pandas DataFrame."
 readme = "README.md"
 license = "Apache-2.0"
