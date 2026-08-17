@@ -1,6 +1,6 @@
 [project]
 name = "tcwpy"
-version = "0.0.1"
+version = "0.0.3"
 authors = [
     {name = "Tom Stephen", email = "tom@outerloop.io"},
     {name = "Pedro Camargo", email = "pedro@outerloop.io"},
