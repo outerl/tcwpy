@@ -3,7 +3,7 @@ name: linting
 on: push
 
 jobs:
-  linting:
+  linting-and-type-checking:
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
