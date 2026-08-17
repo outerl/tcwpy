@@ -1,8 +1,11 @@
-"""Read TransCAD fixed-width binary tables.
+"""
+Read TransCAD fixed-width binary tables.
 
 A table consists of a ``.bin`` data file and a matching ``.dcb`` dictionary.
 The dictionary supplies each column's name, type, one-based start byte, and width, plus
-the full record width. :func:`read_transcad_binary` is the public entry point.
+the full record width.
+
+:func:`read_transcad_binary` is the public entry point.
 """
 
 import csv
@@ -298,9 +301,6 @@ def _to_dataframe(data: np.ndarray, columns: list[_Column]) -> pd.DataFrame:
     return frame
 
 
-# @function_logging(
-#     "Reading TransCAD binary table {path}", logger=logger, level=logging.DEBUG
-# )
 def read_transcad_binary(
     path: PathLike, dictionary_path: PathLike | None = None
 ) -> pd.DataFrame:
