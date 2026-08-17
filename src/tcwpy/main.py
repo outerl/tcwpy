@@ -23,10 +23,12 @@ PathLike = str | Path
 # caliperR maps these to R date/time classes, but TransCAD's on-disk encoding for
 # them is undocumented and has not been verified against a real file. Rejecting
 # them is safer than decoding them into plausible-looking wrong dates.
-_UNVERIFIED_TYPES = {"DATE", "TIME", "DATETIME"}
+_UNVERIFIED_TYPES = {"DATE", "TIME", "DATETIME"}  # TODO is this what we want to do
 
 # The two extensions that name a table; either one identifies the pair.
 _TABLE_SUFFIXES = (".bin", ".dcb")
+
+# Keys are TransCAD types
 
 _NUMPY_FORMATS = {
     "I": "<i4",
@@ -35,9 +37,7 @@ _NUMPY_FORMATS = {
     "F": "<f4",
 }
 
-# caliperR's TcMissToRNa() selects these sentinels from the TransCAD type code.
-# The F value uses the exact float32 minimum rather than caliperR's rounded R
-# literal, which cannot compare equal to the value after it is read from disk.
+# The values TransCAD uses for missing values
 _TRANSCAD_MISSING_VALUES: dict[str, int | float] = {
     "I": int(np.iinfo(np.int32).min) + 1,
     "S": int(np.iinfo(np.int16).min) + 1,
@@ -77,7 +77,7 @@ class _Column:
 
 
 def _table_stem(path: PathLike) -> Path:
-    """Drop a ``.bin``/``.dcb`` extension, leaving any other dotted name intact."""
+    """Drop a ``.bin`` or ``.dcb`` extension, leaving any other dotted name intact."""
     resolved = Path(path).expanduser()
     return (
         resolved.with_suffix("")
@@ -87,14 +87,10 @@ def _table_stem(path: PathLike) -> Path:
 
 
 def _companion_path(stem: Path, suffix: str) -> Path:
-    """Return ``stem`` plus ``suffix``, preferring a case variant that exists.
-
-    TransCAD writes the pair with inconsistent case — Caliper's own reference
-    fixture is ``toy_table.bin`` alongside ``toy_table.DCB`` — which only matters
-    on case-sensitive filesystems. The lower-case name is returned when neither
-    variant exists, so the caller reports the conventional name.
     """
-    candidates = [stem.with_name(stem.name + case) for case in (suffix, suffix.upper())]
+    TransCAD writes the files with inconsistent case, so find the version that exists.
+    """
+    candidates = [stem.with_name(stem.name + case) for case in (suffix.lower(), suffix.upper())]
     return next(
         (candidate for candidate in candidates if candidate.is_file()), candidates[0]
     )
@@ -185,10 +181,8 @@ def _decode_dictionary(dictionary_path: Path) -> str:
         return raw.decode("cp1252", errors="replace")
 
 
-# @function_logging(
-#     "Reading TransCAD dictionary {dictionary_path}", logger=logger, level=logging.DEBUG
-# )
 def _read_dictionary(dictionary_path: Path) -> tuple[int, list[_Column]]:
+    logger.debug(f"Reading TransCAD dictionary {dictionary_path}")
     lines = _decode_dictionary(dictionary_path).splitlines()
     if len(lines) < 3:
         raise TranscadDictionaryError(
@@ -321,6 +315,7 @@ def read_transcad_binary(
     Pass ``dictionary_path`` when the dictionary does not share the binary's
     directory and stem.
     """
+    logger.debug(f"Reading TransCAD binary table {path}")
     logger.warning(
         "Results for %s may be incorrect! The FFB format is reverse engineered, so always verify against "
         "TransCAD. Prefer any other source, such as a table TransCAD exported to a common format.",
