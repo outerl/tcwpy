@@ -1,6 +1,6 @@
 [project]
 name = "tcwpy"
-version = "0.1.0"
+version = "0.0.1"
 authors = [{name = "Tom Stephen", email = "tom@outerloop.io"}]
 description = "Read a TransCAD fixed-format binary table to a pandas DataFrame."
 readme = "README.md"
@@ -15,3 +15,7 @@ dependencies = [
 dev = [
     "pytest"
 ]
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
