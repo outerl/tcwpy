@@ -9,7 +9,6 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v4
       - name: Set Python environment
         uses: actions/setup-python@v5
         with:
