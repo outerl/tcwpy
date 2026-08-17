@@ -1,6 +1,6 @@
 [project]
 name = "tcwpy"
-version = "0.1.0"
+version = "0.0.1"
 authors = [
     {name = "Tom Stephen", email = "tom@outerloop.io"},
     {name = "Pedro Camargo", email = "pedro@outerloop.io"},
@@ -18,3 +18,7 @@ dependencies = [
 dev = [
     "pytest"
 ]
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
