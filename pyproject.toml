@@ -1,7 +1,20 @@
 [project]
-name = "tcbin"
+name = "tcwpy"
 version = "0.1.0"
-description = "Add your description here"
+authors = [
+    {name = "Tom Stephen", email = "tom@outerloop.io"},
+    {name = "Pedro Camargo", email = "pedro@outerloop.io"},
+]
+description = "Read a TransCAD fixed-format binary table to a pandas DataFrame."
 readme = "README.md"
+license = "Apache-2.0"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "pandas",
+    "numpy",
+]
+
+[dependency-groups]
+dev = [
+    "pytest"
+]
