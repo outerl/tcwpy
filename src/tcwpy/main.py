@@ -1,8 +1,11 @@
-"""Read TransCAD fixed-width binary tables.
+"""
+Read TransCAD fixed-width binary tables.
 
 A table consists of a ``.bin`` data file and a matching ``.dcb`` dictionary.
 The dictionary supplies each column's name, type, one-based start byte, and width, plus
-the full record width. :func:`read_transcad_binary` is the public entry point.
+the full record width.
+
+:func:`read_transcad_binary` is the public entry point.
 """
 
 import csv
@@ -18,10 +21,8 @@ logger = logging.getLogger(__name__)
 
 PathLike = str | Path
 
-# caliperR maps these to R date/time classes, but TransCAD's on-disk encoding for
-# them is undocumented and has not been verified against a real file. Rejecting
-# them is safer than decoding them into plausible-looking wrong dates.
-_UNVERIFIED_TYPES = {"DATE", "TIME", "DATETIME"}  # TODO is this what we want to do
+# Skipping implementation of DATE, TIME, and DATETIME as there is no test data
+_UNVERIFIED_TYPES = {"DATE", "TIME", "DATETIME"}
 
 # The two extensions that name a table; either one identifies the pair.
 _TABLE_SUFFIXES = (".bin", ".dcb")
@@ -300,9 +301,6 @@ def _to_dataframe(data: np.ndarray, columns: list[_Column]) -> pd.DataFrame:
     return frame
 
 
-# @function_logging(
-#     "Reading TransCAD binary table {path}", logger=logger, level=logging.DEBUG
-# )
 def read_transcad_binary(
     path: PathLike, dictionary_path: PathLike | None = None
 ) -> pd.DataFrame:
