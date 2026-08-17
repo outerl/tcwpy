@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
-from transcad_binary_parser.read_binary import (
+from tcwpy import (
     TranscadBinaryError,
     TranscadDictionaryError,
     read_transcad_binary,
