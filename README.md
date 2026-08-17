@@ -17,7 +17,7 @@ with NumPy used to decode records directly.
 ```python
 from pathlib import Path
 
-from transcad_binary_parser.read_binary import read_transcad_binary
+from tcwpy import read_transcad_binary
 
 table = read_transcad_binary(Path("inputs/trips.bin"))
 ```
