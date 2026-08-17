@@ -26,7 +26,7 @@ table = read_transcad_binary(
 )
 ```
 
-This reader only converts the following DCB types: `I`, `S`, `R`, `F`, and `C`. The `Date`, `Time`, and `DateTime` fields are not implemented and will raise an error if encountered.
+This package only converts the following DCB types: `I`, `S`, `R`, `F`, and `C`. The `Date`, `Time`, and `DateTime` fields are not implemented and will raise an error if encountered.
 
 ## Licence
 
