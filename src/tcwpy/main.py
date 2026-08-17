@@ -16,7 +16,7 @@ from typing import Any, cast
 
 import numpy as np
 import pandas as pd
-import regex as re
+import re
 
 logger = logging.getLogger(__name__)
 
