@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
+
 from tcwpy import (
     TranscadBinaryError,
     TranscadDictionaryError,
@@ -263,16 +264,7 @@ def test_character_fields_are_nul_terminated_trimmed_bytes_with_empty_values_as_
 
 def test_uses_one_based_start_bytes_and_honours_padding(tmp_path: Path) -> None:
     stem = tmp_path / "padded"
-    stem.with_suffix(".dcb").write_text(
-        "".join(
-            [
-                '"padded",\n',
-                "20 2\n",
-                '"Val",F,13,4\n',
-                '"ID1",I,5,4\n',
-            ]
-        )
-    )
+    stem.with_suffix(".dcb").write_text('"padded",\n20 2\n"Val",F,13,4\n"ID1",I,5,4\n')
     with stem.with_suffix(".bin").open("wb") as binary_file:
         for identifier, value in ((1, 1.5), (2, 2.5)):
             binary_file.write(
