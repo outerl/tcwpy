@@ -16,6 +16,7 @@ from typing import Any, cast
 
 import numpy as np
 import pandas as pd
+import regex as re
 
 logger = logging.getLogger(__name__)
 
@@ -189,7 +190,7 @@ def _read_dictionary(dictionary_path: Path) -> tuple[int, list[_Column]]:
         )
 
     try:
-        record_width = int(lines[1].split()[0])
+        record_width = int(re.split('\\W+', lines[1])[0])
     except (IndexError, ValueError) as exc:
         raise TranscadDictionaryError(
             f"{dictionary_path}: could not read record width from line 2"
