@@ -16,8 +16,6 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["TranscadBinaryError", "TranscadDictionaryError", "read_transcad_binary"]
-
 PathLike = str | Path
 
 # caliperR maps these to R date/time classes, but TransCAD's on-disk encoding for
