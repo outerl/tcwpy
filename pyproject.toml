@@ -8,7 +8,7 @@ authors = [
 description = "Read a TransCAD fixed-format binary table to a pandas DataFrame."
 readme = "README.md"
 license = "Apache-2.0"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
     "pandas",
     "numpy",
